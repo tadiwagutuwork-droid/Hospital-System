@@ -15,3 +15,29 @@ independent problem solving.
 - Custom error handling throughout for robustness
 
 ## Project Structure
+```
+Hospital-System/
+├── main.py                  # Entry point
+├── data/                    # CSV storage files
+├── models/                  # Core class hierarchy
+│   ├── __init__.py
+│   ├── appointments.py       # Appointment with status transitions
+│   ├── doctor.py            # Doctor, GeneralPractitioner, Specialist
+│   └── exceptions.py    # MedicalRecord
+│   └── medical_records.py    # MedicalRecord
+│   ├── patient.py           # Patient (inherits Person)
+│   ├── person.py            # Abstract base class
+├── storage/                 # Persistence layer
+│   ├── __init__.py
+│   └── csv_handler.py       # CSV read/write utilities
+│   ├── storage_mixin.py     # Abstract StorageMixin
+└── menu/                    # Menu layer
+│   ├── __init__.py
+│   ├── appointment_menu.py
+│   ├── billing_menu.py
+│   ├── doctor_menu.py     
+│   ├── main_menu.py
+│   ├──medical_records_menu.py
+│   ├── patient_menu.py
+
+
