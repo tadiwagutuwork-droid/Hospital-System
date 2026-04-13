@@ -1,0 +1,8 @@
+Appointment ID,Patient ID,Doctor ID,Date,Time,Status,Bill,Paid
+A0025,P001,D001,2025-08-01,09:00,completed,500.0,False
+A0032,P001,D001,2025-08-01,09:00,completed,500.0,False
+A0039,P001,D001,2025-08-01,09:00,completed,500.0,False
+A0046,P001,D001,2025-08-01,09:00,completed,500.0,False
+A0053,P005,D005,2025-11-01,09:30,completed,2000,True
+A0055,P001,D001,2025-08-01,09:00,completed,500.0,False
+A0062,P005,D005,2025-11-01,09:30,completed,2000,True
