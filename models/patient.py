@@ -32,10 +32,10 @@ class Patient(Person, FileHandling): #inherits two classes
 ======= PATIENT DETAILS ========
 
 Patient ID: {self.__patient_id}
-Name: {self._Person__name}
-Age: {self._Person__age}
-Contact Number: {self._Person__contact_number}
-Email: {self._Person__email}
+Name: {self.name}
+Age: {self.age}
+Contact Number: {self.contact_number}
+Email: {self.email}
 Blood Type: {self.__blood_type}
 Medical History: "{"; ".join(self.__medical_history)}"
 Registration Date: {self.__registration_date}
@@ -64,10 +64,10 @@ Active: {self.__is_active}
     def to_dict(self) -> dict:
         """return all attributes as a flat dictionary for CSV writing"""
         return {'Patient ID': self.__patient_id,
-                'Name': self._Person__name,
-                'Age': self._Person__age,
-                'Contact Number': self._Person__contact_number,
-                'Email': self._Person__email,
+                'Name': self.name,
+                'Age': self.age,
+                'Contact Number': self.contact_number,
+                'Email': self.email,
                 'Blood Type': self.__blood_type, 
                 'Medical History': "; ".join(self.__medical_history),
                 'Registration Date': self.__registration_date, 
@@ -77,7 +77,7 @@ Active: {self.__is_active}
     @classmethod
     def from_dict(cls, data: dict): #creates a Patient class
         #def __init__(self, name: str, age: int, contact_number: str, email: str, patient_id: str, blood_type: str, medical_history: list, registration_date: str, is_active: bool):
-        instance = cls(data['Name'], int(data['Age']), data['Contact Number'], data['Email'], data['Blood Type'], data['Medical History'].split('; '), data['Registration Date'], data['Active'] == True, data['Patient ID'],  _loading=True)
+        instance = cls(data['Name'], int(data['Age']), data['Contact Number'], data['Email'], data['Blood Type'], data['Medical History'].split('; '), data['Registration Date'], data['Active'] == 'True', data['Patient ID'],  _loading=True)
         return instance
     
     @classmethod
@@ -98,7 +98,7 @@ Active: {self.__is_active}
 
 
     def __str__(self):
-        return f"\"Patient[{self.__patient_id}: {self._Person__name}, Age: {self._Person__age}]\""
+        return f"\"Patient[{self.__patient_id}: {self.name}, Age: {self.age}]\""
     
     def update_record(self):
         #ask record to update specifically for that class
@@ -117,7 +117,7 @@ Active: {self.__is_active}
                 row['Medical History'] = "; ".join(self.__medical_history)
                 break
         else:
-            raise excp.DoctorNotFoundError()
+            raise excp.PatientNotFoundError()
         
         with open(filepath, 'w', newline='') as file:
             writer = csv.DictWriter(file, fieldnames=fieldnames)
@@ -161,12 +161,9 @@ Active: {self.__is_active}
     
     @Person.name.setter
     def name(self, value):
-        try: 
-            if value.strip() == '':
-                raise ValueError("Name cannot be empty")
-            self._Person__name = value
-        except (ValueError, TypeError) as e:
-            print("Error", e)
+        if not isinstance(value, str) or value.strip() == '':
+            raise ValueError("Name cannot be empty")
+        self._Person__name = value
     
     @Person.age.setter
     def age(self, value):
