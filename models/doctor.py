@@ -32,10 +32,10 @@ class Doctor(Person, ABC):
 ======= DOCTOR DETAILS ========
 
 Doctor ID: {self.__doctor_id}
-Name: {self._Person__name}
-Age: {self._Person__age}
-Contact Number: {self._Person__contact_number}
-Email: {self._Person__email}
+Name: {self.name}
+Age: {self.age}
+Contact Number: {self.contact_number}
+Email: {self.email}
 Specialisation: {self.__specialisation}
 Available Days: "{"; ".join(self.__available_days)}"
 Availability: {self.__is_available}
