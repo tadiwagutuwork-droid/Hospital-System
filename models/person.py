@@ -15,7 +15,7 @@ class Person(ABC):
         return self.__name
     
     @property
-    def age(self) -> str:
+    def age(self) -> int:
         return self.__age
     
     @property

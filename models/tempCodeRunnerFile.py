@@ -1,1 +1,0 @@
-GeneralPractitioner, Specialist
