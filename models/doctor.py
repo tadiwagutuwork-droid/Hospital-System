@@ -64,7 +64,7 @@ Availability: {self.__is_available}
         temp = Person.contact_number.fget(self)
         return temp
     
-    @Person.name.getter
+    @Person.email.getter
     def email(self) -> str:
         temp = Person.email.fget(self)
         return temp
@@ -122,21 +122,43 @@ Availability: {self.__is_available}
     def make_record(self):
         base_dir = os.path.dirname(os.path.abspath(__file__))
         filepath = os.path.join(base_dir, '..', 'data', 'identification.txt')
-        record = f"D{random.randint(1, 9999):04d}"
 
-        if os.path.getsize(filepath) == 0:
-            with open(filepath, 'w') as file:
-                writer = file.writelines(['0\n', record + '\n', '0\n', '0\n'])
-            return record
+        with open(filepath, 'r') as file:
+            lines = file.readlines()
+
+        counter = int(lines[0].strip()) + 1
+        record = f"D{counter:04d}"
+
+        lines[1] = f"{counter}\n"
+
+        with open(filepath, 'w') as file:
+            file.writelines(lines)
+
+        return record
+    
+    def update_record(self):
+        #ask record to update specifically for that class
+        value_id = self.doctor_id
+        if len(value_id) != 5 or value_id[0] != 'D':
+            raise excp.InvalidDoctorIDError()
+
+        filepath = self._filepath
+        with open(filepath, 'r') as csv_file:
+            reader = csv.DictReader(csv_file)
+            rows = list(reader)
+            fieldnames = reader.fieldnames
+
+        for row in rows:
+            if row['Doctor ID'] == value_id:
+                row['Availability'] = self.is_available
+                break
         else:
-            with open(filepath, 'r', newline='') as file:
-                lines = file.readlines()
-            while lines[-1].strip() == record:
-                record = f"D{random.randint(1, 9999):04d}"
-            lines[1] = record + '\n'
-            with open(filepath, 'w') as file:
-                file.writelines(lines)
-            return record
+            raise excp.DoctorNotFoundError()
+        
+        with open(filepath, 'w', newline='') as file:
+            writer = csv.DictWriter(file, fieldnames=fieldnames)
+            writer.writeheader()
+            writer.writerows(rows)
 
 
 #GeneralPractitioner & Specialist sub-classes of Doctor
@@ -186,30 +208,6 @@ class GeneralPractitioner(Doctor, FileHandling):
                 instance = cls.from_dict(row)
                 instances.append(instance)
         return instances
-    
-    def update_record(self):
-        #ask record to update specifically for that class
-        value_id = self.doctor_id
-        if len(value_id) != 5 or value_id[0] != 'D':
-            raise excp.InvalidDoctorIDError()
-
-        filepath = self._filepath
-        with open(filepath, 'r') as csv_file:
-            reader = csv.DictReader(csv_file)
-            rows = list(reader)
-            fieldnames = reader.fieldnames
-
-        for row in rows:
-            if row['Doctor ID'] == value_id:
-                row['Availability'] = self.is_available
-                break
-        else:
-            raise excp.DoctorNotFoundError()
-        
-        with open(filepath, 'w', newline='') as file:
-            writer = csv.DictWriter(file, fieldnames=fieldnames)
-            writer.writeheader()
-            writer.writerows(rows)
 
     def change_availability(self, value):
         self.is_available = value
@@ -217,7 +215,7 @@ class GeneralPractitioner(Doctor, FileHandling):
 
     @Doctor.is_available.setter
     def is_available(self, availability):
-        Doctor.is_available.fset(availability)
+        Doctor.is_available.fset(self, availability)
     
     @Doctor.name.setter
     def name(self, value):
@@ -354,9 +352,7 @@ class Specialist(Doctor, FileHandling):
 
     @Doctor.is_available.setter
     def is_available(self, availability):
-        if not isinstance(availability, bool):
-            raise ValueError("Availability should be a boolean value.")
-        self.__is_available = availability
+        Doctor.is_available.fset(self, availability)
     
     @Doctor.name.setter
     def name(self, value):
@@ -364,15 +360,15 @@ class Specialist(Doctor, FileHandling):
     
     @Doctor.age.setter
     def name(self, value):
-        Doctor.name.fset(self, value)
+        Doctor.age.fset(self, value)
     
     @Doctor.contact_number.setter
     def name(self, value):
-        Doctor.name.fset(self, value)
+        Doctor.contact_number.fset(self, value)
     
     @Doctor.email.setter
     def name(self, value):
-        Doctor.name.fset(self, value)
+        Doctor.email.fset(self, value)
 
     @property
     def fee(self):

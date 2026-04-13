@@ -127,20 +127,19 @@ Active: {self.__is_active}
     def make_record(self):
         base_dir = os.path.dirname(os.path.abspath(__file__))
         filepath = os.path.join(base_dir, '..', 'data', 'identification.txt')
-        record = f"P{random.randint(1, 9999):04d}"
-        if os.path.getsize(filepath) == 0:
-            with open(filepath, 'w') as file:
-                writer = file.writelines([record + '\n', '0\n', '0\n', '0\n'])
-            return record
-        else:
-            with open(filepath, 'r', newline='') as file:
-                lines = file.readlines()
-            while lines[0].strip() == record:
-                record = f"P{random.randint(1, 9999):04d}"
-            lines[0] = record + '\n'
-            with open(filepath, 'w') as file:
-                file.writelines(lines)
-            return record
+
+        with open(filepath, 'r') as file:
+            lines = file.readlines()
+
+        counter = int(lines[0].strip()) + 1
+        record = f"P{counter:04d}"
+
+        lines[0] = f"{counter}\n"
+
+        with open(filepath, 'w') as file:
+            file.writelines(lines)
+
+        return record
 
 # def __init__(self, name: str, age: int, contact_number: str, email: str, blood_type: str, medical_history: list, registration_date: str, is_active: bool, patient_id=None, _loading=False):     
     @Person.name.getter
@@ -182,7 +181,7 @@ Active: {self.__is_active}
         if not isinstance(value, str) or '@' not in value:
             raise ValueError("Invalid email")
         self._Person__email = value
-        
+
     #doesnt get setter
     @property
     def patient_id(self):

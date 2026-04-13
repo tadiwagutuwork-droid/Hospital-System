@@ -57,20 +57,19 @@ class Medical_Records(FileHandling):
     def make_record(self):
         base_dir = os.path.dirname(os.path.abspath(__file__))
         filepath = os.path.join(base_dir, '..', 'data', 'identification.txt')
-        record = f"M{random.randint(1, 9999):04d}"
-        if os.path.getsize(filepath) == 0:
-            with open(filepath, 'w') as file:
-                writer = file.writelines(['0\n', '0\n', '0\n', record + '\n'])
-            return record
-        else:
-            with open(filepath, 'r', newline='') as file:
-                lines = file.readlines()
-            while lines[-1].strip() == record:
-                record = f"M{random.randint(1, 9999):04d}"
-            lines[-1] = record + '\n'
-            with open(filepath, 'w') as file:
-                file.writelines(lines)
-            return record
+
+        with open(filepath, 'r') as file:
+            lines = file.readlines()
+
+        counter = int(lines[0].strip()) + 1
+        record = f"M{counter:04d}"
+
+        lines[3] = f"{counter}\n"
+
+        with open(filepath, 'w') as file:
+            file.writelines(lines)
+
+        return record
         
     def __str__(self):
         return f"""

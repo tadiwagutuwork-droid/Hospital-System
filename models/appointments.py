@@ -156,22 +156,16 @@ class Appointments(FileHandling):
         base_dir = os.path.dirname(os.path.abspath(__file__))
         filepath = os.path.join(base_dir, '..', 'data', 'identification.txt')
 
-        if os.path.getsize(filepath) == 0:
-            number = 1
-        else:
-            with open(filepath, 'r') as file:
-                lines = file.readlines()
-            number = int(lines[-2].strip()[1:]) + 1  # strip 'A', convert to int, increment
+        with open(filepath, 'r') as file:
+            lines = file.readlines()
 
-        record = f"A{number:04d}"
+        counter = int(lines[0].strip()) + 1
+        record = f"P{counter:04d}"
 
-        if os.path.getsize(filepath) == 0:
-            with open(filepath, 'w') as file:
-                file.writelines(['0\n', '0\n', record + '\n', '0\n'])
-        else:
-            lines[-2] = record + '\n'
-            with open(filepath, 'w') as file:
-                file.writelines(lines)
+        lines[2] = f"{counter}\n"
+
+        with open(filepath, 'w') as file:
+            file.writelines(lines)
 
         return record
     
