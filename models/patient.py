@@ -167,31 +167,22 @@ Active: {self.__is_active}
     
     @Person.age.setter
     def age(self, value):
-        try: 
-            if not (0 <= value <= 120):
-                raise ValueError("Invalid age")
-            self._Person__age = value
-        except (ValueError, TypeError) as e:
-            print("Error", e)
+        if not isinstance(value, int) or not (0 <= value <= 120):
+            raise ValueError("Invalid age")
+        self._Person__age = value
     
     @Person.contact_number.setter
     def contact_number(self, value):
-        try: 
-            if value.strip() == '':
-                raise ValueError("Contact number cannot be empty")
-            self._Person__contact_number = value
-        except (ValueError, TypeError) as e:
-            print("Error", e)
+        if not isinstance(value, str) or value.strip() == '':
+            raise ValueError("Contact number cannot be empty")
+        self._Person__contact_number = value
     
     @Person.email.setter
     def email(self, value):
-        try: 
-            if '@' not in value:
-                raise ValueError("Invalid email")
-            self._Person__email = value
-        except (ValueError, TypeError) as e:
-            print("Error", e)
-    
+        if not isinstance(value, str) or '@' not in value:
+            raise ValueError("Invalid email")
+        self._Person__email = value
+        
     #doesnt get setter
     @property
     def patient_id(self):
